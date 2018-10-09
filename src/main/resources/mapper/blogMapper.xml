@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucky.socialnetwork.dao.mysql.BlogDao">
+    <resultMap id="blogMap" type="blog">
+        <id column="id" property="id"/>
+        <result column="like_count" property="likeCount"/>
+        <result column="gmt_create" property="createTime"/>
+        <result column="nickname" property="author"/>
+    </resultMap>
+
+    <!-- insert -->
+    <insert id="insertBlog" parameterType="blog" keyProperty="id" useGeneratedKeys="true">
+        insert into blog (uid, title, text) values (#{uid}, #{title}, #{text})
+    </insert>
+
+    <!-- select -->
+    <select id="getBlogById" resultMap="blogMap">
+        select blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.nickname
+        from blog inner join user on blog.uid = user.id
+        where blog.id = #{id}
+    </select>
+
+    <select id="getUserBlogs" resultMap="blogMap">
+        select blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.nickname
+        from blog inner join user on blog.uid = user.id
+        where user.id = #{id}
+        limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getBlogsByLikeCount" resultMap="blogMap">
+        select blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.nickname
+        from blog inner join user on blog.uid = user.id
+        order by blog.like_count
+        limit #{limit} offset #{offset}
+    </select>
+
+    <!-- update -->
+    <update id="updateBlog">
+        update blog set text = #{text}
+        where id = #{id}
+    </update>
+
+    <!-- delete -->
+    <delete id="deleteBlog">
+        delete from blog where id = #{id}
+    </delete>
+</mapper>

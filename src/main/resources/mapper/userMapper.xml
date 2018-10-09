@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lucky.socialnetwork.dao.mysql.UserDao">
+    <resultMap id="userMap" type="user">
+        <id column="id" property="id"/>
+        <result column="blog_count" property="blogCount"/>
+        <result column="follow_count" property="followCount"/>
+        <result column="follower_count" property="followerCount"/>
+        <result column="gmt_create" property="createTime"/>
+        <result column="gmt_modified" property="updateTime"/>
+    </resultMap>
+
+    <!-- insert -->
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        insert into user (username, password, nickname) values (#{username}, #{password}, #{username})
+    </insert>
+    
+    <insert id="insertFollow">
+        insert into follow (follow_id, follower_id) values (#{follow_id}, #{follower_id});
+    </insert>
+
+    <!-- select -->
+    <select id="getUserById" resultMap="userMap">
+        select * from user where id = #{id}
+    </select>
+
+    <select id="getUserByUsername" resultMap="userMap">
+        select * from user where username = #{username}
+    </select>
+
+    <select id="getFollows" resultMap="userMap">
+        select user.* from user
+        inner join follow on user.id = follow.follow_id
+        where follow.follower_id = #{id}
+        limit #{count} offset #{offset}
+    </select>
+
+    <select id="getFollowers" resultMap="userMap">
+        select user.* from user
+        inner join follow on user.id = follow.follower_id
+        where follow.follow_id = #{id}
+        limit #{count} offset #{offset}
+    </select>
+    
+    <select id="getRankUsers" resultMap="userMap">
+        select * from user
+        <choose>
+            <when test="type == 'followCount'.toString()">
+                order by follow_count desc
+            </when>
+            <when test="type == 'followerCount'.toString()">
+                order by follower_count desc
+            </when>
+            <when test="type == 'blogCount'.toString()">
+                order by blog_count desc
+            </when>
+        </choose>
+        limit #{count} offset #{offset}
+    </select>
+
+    <!-- update -->
+    <update id="updateUser" parameterType="user" >
+        update user
+          <set>
+              <if test="nickname != null">nickname = #{nickname},</if>
+              <if test="sex != null">sex = #{sex},</if>
+              <if test="description != null">description = #{description}</if>
+          </set>
+        where id = #{id}
+    </update>
+
+    <update id="incrementCount">
+        update user
+        <choose>
+            <when test="field == 'followCount'.toString()">
+                set follow_count = follow_count + 1
+            </when>
+            <when test="field == 'followerCount'.toString()">
+                set follower_count = follower_count + 1
+            </when>
+            <when test="field == 'blogCount'.toString()">
+                set blog_count = blog_count + 1
+            </when>
+        </choose>
+        where id = #{id}
+    </update>
+
+    <update id="decrementCount">
+        update user
+        <choose>
+            <when test="field == 'followCount'.toString()">
+                set follow_count = follow_count - 1
+            </when>
+            <when test="field == 'followerCount'.toString()">
+                set follower_count = follower_count - 1
+            </when>
+            <when test="field == 'blogCount'.toString()">
+                set blog_count = blog_count - 1
+            </when>
+        </choose>
+        where id = #{id}
+    </update>
+
+    <!-- delete -->
+    <delete id="deleteFollow">
+        delete from follow
+        where follow_id = #{follow_id} and follower_id = #{follower_id}
+    </delete>
+</mapper>
