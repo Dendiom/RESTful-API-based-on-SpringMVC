@@ -1,7 +1,9 @@
 package com.lucky.socialnetwork.controller.auth;
 
 import com.lucky.socialnetwork.bean.Blog;
+import com.lucky.socialnetwork.bean.exception.CustomException;
 import com.lucky.socialnetwork.constant.Attributes;
+import com.lucky.socialnetwork.constant.ExceptionCode;
 import com.lucky.socialnetwork.service.BlogService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +56,13 @@ public class BlogController {
 
     @PostMapping("/like")
     public void likeBlog(HttpServletRequest request, @RequestParam("id") int id,
-                         @RequestParam("like") int like) throws Exception {
+                         @RequestParam("option") int option) throws Exception {
         int uid = Integer.valueOf(request.getAttribute(Attributes.UID).toString());
-        blogService.likeBlog(uid, id, 1);
+        if (option != 0 && option !=1) {
+            throw new CustomException(ExceptionCode.INVALID_PARAMETRE);
+        }
 
+        blogService.likeOrUnlikeBlog(uid, id, option);
     }
 
 }

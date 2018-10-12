@@ -15,7 +15,10 @@ public enum ExceptionCode {
     NOT_FOllOWED(1206, "not followed"),
     ILLEGAL_OPERATION(1207, "illegal operation"),
     BLOG_NOT_EXIST(1208, "blog not exits"),
-    WRONG_AUTHOR(1210, "wrong author");
+    USER_NOT_HAS_THIS_BLOG(1210, "user doesn't have this blog"),
+    WRONG_AUTHOR(1211, "wrong author"),
+    ALREADY_LIKED(1212, "already liked"),
+    NOT_LIKE(1213, "not like");
 
 
     private final int value;

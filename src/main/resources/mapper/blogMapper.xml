@@ -18,28 +18,48 @@
 
     <!-- select -->
     <select id="getBlogById" resultMap="blogMap">
-        select blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.nickname
+        select blog.id, blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.nickname
         from blog inner join user on blog.uid = user.id
         where blog.id = #{id}
     </select>
 
     <select id="getUserBlogs" resultMap="blogMap">
-        select blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.nickname
+        select blog.id, blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.nickname
         from blog inner join user on blog.uid = user.id
         where user.id = #{id}
         limit #{limit} offset #{offset}
     </select>
 
     <select id="getBlogsByLikeCount" resultMap="blogMap">
-        select blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.nickname
+        select blog.id, blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.nickname
         from blog inner join user on blog.uid = user.id
-        order by blog.like_count
+        order by blog.like_count desc
+        limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getFollowedBlogs" resultMap="blogMap">
+        select blog.id, blog.uid, blog.title, blog.text, blog.like_count, blog.gmt_create, user.username
+        from (user inner join blog on user.id = blog.uid)
+        inner join follow on user.id = follow.follow_id
+        where follow.follower_id = #{id};
         limit #{limit} offset #{offset}
     </select>
 
     <!-- update -->
     <update id="updateBlog">
         update blog set text = #{text}
+        where id = #{id}
+    </update>
+
+    <update id="incrementLikeCount">
+        update blog
+        set like_count = like_count + 1
+        where id = #{id}
+    </update>
+
+    <update id="decrementLikeCount">
+        update blog
+        set like_count = like_count - 1
         where id = #{id}
     </update>
 

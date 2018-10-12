@@ -7,7 +7,6 @@ import java.sql.Timestamp;
 
 public class Blog {
 
-    @JsonIgnore
     private Integer id;
     @JsonIgnore
     private Integer uid;

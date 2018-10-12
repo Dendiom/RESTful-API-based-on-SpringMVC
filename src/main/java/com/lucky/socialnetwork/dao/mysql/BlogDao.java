@@ -19,4 +19,8 @@ public interface BlogDao {
     List<Blog> getFollowedBlogs(@Param("id") int id, @Param("limit") int limit, @Param("offset") int offset);
 
     int deleteBlog(@Param("id") int id);
+
+    void incrementLikeCount(@Param("id") int id);
+
+    void decrementLikeCount(@Param("id") int id);
 }

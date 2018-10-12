@@ -19,5 +19,5 @@ public interface BlogService {
 
     void deleteBlog(int uid, int id) throws Exception;
 
-    void likeBlog(int uid, int id, int like) throws Exception;
+    void likeOrUnlikeBlog(int uid, int id, int option) throws Exception;
 }
